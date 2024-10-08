@@ -3,14 +3,24 @@ import { ArgReader } from './cmdUtil';
 import prompts from 'prompts';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { exit } from 'process';
 
 const __dirname = fileURLToPath(import.meta.url);
 
 const argReader = new ArgReader();
 
-const years = await readdir(path.join(__dirname, '../year'));
+if (argReader.checkFlag('-t', '--today')) {
+  // use todays date
+  console.log(new Date());
+  exit();
+}
 
-console.log(years);
+if (argReader.checkFlag('-r', '--repeat')) {
+  // repeat last day ran
+  console.log('repeat');
+  exit();
+}
+const years = await readdir(path.join(__dirname, '../year'));
 
 const { year } = await prompts([
   {

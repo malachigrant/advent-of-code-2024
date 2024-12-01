@@ -1,3 +1,5 @@
+import { readFileSync } from 'fs';
+
 const flagRegex = /^-([a-z]+)/;
 
 export class ArgReader {
@@ -20,4 +22,8 @@ export class ArgReader {
       return !!this._args.find((val) => val === option);
     });
   }
+}
+
+export function readLines(path: string): string[] {
+  return readFileSync(path).toString().split('\n');
 }

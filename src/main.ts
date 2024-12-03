@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { exit } from 'process';
 import path from 'path';
 import { readFileSync, writeFileSync } from 'fs';
+import chalk from 'chalk';
 
 const __dirname = fileURLToPath(import.meta.url);
 
@@ -31,6 +32,9 @@ if (repeatLast) {
   day = currentDay;
 } else {
   const years = await readdir(path.join(__dirname, '../year'));
+  const initialYearIndex = years.findIndex(
+    (year) => year === currentYear.toString(),
+  );
 
   const { yearPrompt } = await prompts([
     {
@@ -38,11 +42,14 @@ if (repeatLast) {
       name: 'yearPrompt',
       message: 'Select year:',
       choices: years.map((year) => ({ title: year, value: year })),
-      initial: years.findIndex((year) => year === currentYear.toString()) || 0,
+      initial: initialYearIndex === -1 ? 0 : initialYearIndex,
     },
   ]);
 
   const days = await readdir(path.join(__dirname, '../year', yearPrompt));
+  const initialDayIndex = days.findIndex(
+    (day) => day === currentDay.toString(),
+  );
 
   const { dayPrompt } = await prompts([
     {
@@ -50,7 +57,7 @@ if (repeatLast) {
       name: 'dayPrompt',
       message: 'Select day:',
       choices: days.map((day) => ({ title: day, value: day })),
-      initial: days.findIndex((day) => day === currentDay.toString()) || 0,
+      initial: initialDayIndex === -1 ? 0 : initialDayIndex,
     },
   ]);
   day = dayPrompt;
@@ -65,49 +72,38 @@ const testInputPath = path.join(dayPath, 'testInput.txt');
 const codePath = path.join(dayPath, 'index.ts');
 
 const importedDay = await import(codePath);
-const inputLines = readLines(inputPath);
+const inputLines = readLines(runTest ? testInputPath : inputPath);
 
-if (!runTest) {
-  if (importedDay.part1) {
-    console.log(`PART 1: ${importedDay.part1(inputLines)}`);
-  }
-  if (importedDay.part2) {
-    console.log(`PART 2: ${importedDay.part2(inputLines)}`);
-  }
-} else {
-  const testInputLines = readLines(testInputPath);
-  const testResultsMatch = testInputLines[0].match(
-    /__TEST_RESULTS__(.*)__(.*)/,
-  );
-  let expectedPart1 = null;
-  let expectedPart2 = null;
-  if (testResultsMatch) {
-    const [, part1, part2] = testResultsMatch;
-    expectedPart1 = part1;
-    expectedPart2 = part2;
-    testInputLines.splice(0, 1);
-  }
-  console.log('TEST RESULTS\n');
-  if (importedDay.part1) {
-    const part1Result = importedDay.part1(testInputLines);
-    console.log(`PART 1: ${part1Result}`);
-    if (expectedPart1) {
-      if (expectedPart1 === part1Result.toString()) {
-        console.log(` MATCHES EXPECTED ${expectedPart1}`);
-      } else {
-        console.log(` DOES NOT MATCH EXPECTED ${expectedPart1}`);
-      }
+const testResultsMatch = inputLines[0].match(/__TEST_RESULTS__(.*)__(.*)/);
+let expectedPart1 = null;
+let expectedPart2 = null;
+if (testResultsMatch) {
+  const [, part1, part2] = testResultsMatch;
+  expectedPart1 = part1;
+  expectedPart2 = part2;
+  inputLines.splice(0, 1);
+}
+
+if (runTest) console.log('TEST RESULTS\n');
+if (importedDay.part1) {
+  const part1Result = importedDay.part1(inputLines);
+  console.log(`PART 1: ${part1Result}`);
+  if (expectedPart1) {
+    if (expectedPart1 === part1Result.toString()) {
+      console.log(chalk.green(` MATCHES EXPECTED ${expectedPart1}`));
+    } else {
+      console.log(chalk.red(` DOES NOT MATCH EXPECTED ${expectedPart1}`));
     }
   }
-  if (importedDay.part2) {
-    const part2Result = importedDay.part2(testInputLines);
-    console.log(`PART 2: ${part2Result}`);
-    if (expectedPart2) {
-      if (expectedPart2 === part2Result.toString()) {
-        console.log(` MATCHES EXPECTED ${expectedPart2}`);
-      } else {
-        console.log(` DOES NOT MATCH EXPECTED ${expectedPart2}`);
-      }
+}
+if (importedDay.part2) {
+  const part2Result = importedDay.part2(inputLines);
+  console.log(`PART 2: ${part2Result}`);
+  if (expectedPart2) {
+    if (expectedPart2 === part2Result.toString()) {
+      console.log(chalk.green(` MATCHES EXPECTED ${expectedPart2}`));
+    } else {
+      console.log(chalk.red(` DOES NOT MATCH EXPECTED ${expectedPart2}`));
     }
   }
 }

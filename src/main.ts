@@ -17,6 +17,12 @@ const runTest = argReader.checkFlag('--test');
 const currentYear = new Date().getFullYear().toString();
 const currentDay = (new Date().getDay() + 1).toString();
 
+function time(fn) {
+  const start = performance.now();
+  fn();
+  return performance.now() - start;
+}
+
 let year: string, day: string;
 if (repeatLast) {
   try {
@@ -86,8 +92,11 @@ if (testResultsMatch) {
 
 if (runTest) console.log('TEST RESULTS\n');
 if (importedDay.part1) {
-  const part1Result = importedDay.part1(inputLines);
-  console.log(`PART 1: ${part1Result}`);
+  let part1Result;
+  const msP1 = time(() => (part1Result = importedDay.part1(inputLines)));
+  console.log(
+    `PART 1: ${part1Result} - ${msP1.toLocaleString('en-US', { maximumFractionDigits: 3, useGrouping: false })}ms`,
+  );
   if (expectedPart1) {
     if (expectedPart1 === part1Result.toString()) {
       console.log(chalk.green(` MATCHES EXPECTED ${expectedPart1}`));
@@ -97,8 +106,11 @@ if (importedDay.part1) {
   }
 }
 if (importedDay.part2) {
-  const part2Result = importedDay.part2(inputLines);
-  console.log(`PART 2: ${part2Result}`);
+  let part2Result;
+  const msP2 = time(() => (part2Result = importedDay.part2(inputLines)));
+  console.log(
+    `PART 2: ${part2Result} - ${msP2.toLocaleString('en-US', { maximumFractionDigits: 3, useGrouping: false })}ms`,
+  );
   if (expectedPart2) {
     if (expectedPart2 === part2Result.toString()) {
       console.log(chalk.green(` MATCHES EXPECTED ${expectedPart2}`));

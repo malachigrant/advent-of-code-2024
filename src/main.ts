@@ -15,7 +15,7 @@ const useToday = argReader.checkFlag('-t', '--today');
 const repeatLast = argReader.checkFlag('-r', '--repeat');
 const runTest = argReader.checkFlag('--test');
 const currentYear = new Date().getFullYear().toString();
-const currentDay = (new Date().getDay() + 1).toString();
+const currentDay = new Date().getDate().toString();
 
 function time(fn) {
   const start = performance.now();

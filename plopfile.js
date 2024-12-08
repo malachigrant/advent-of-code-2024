@@ -12,7 +12,7 @@ export default function (plop) {
         type: 'input',
         name: 'day',
         message: 'Insert day',
-        default: new Date().getDay() + 1,
+        default: new Date().getDate(),
       },
     ],
     actions: [

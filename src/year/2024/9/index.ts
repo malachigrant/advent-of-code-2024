@@ -1,5 +1,5 @@
 export function part1(lines: string[]) {
-  const arr = [];
+  const arr: { id: number; length: number }[] = [];
   let isFile = true;
   let fileId = 0;
   lines[0]
@@ -7,32 +7,49 @@ export function part1(lines: string[]) {
     .map(Number)
     .forEach((num) => {
       if (isFile) {
-        for (let i = 0; i < num; i++) {
-          arr.push(fileId);
-        }
+        arr.push({ id: fileId, length: num });
         fileId++;
       } else {
-        for (let i = 0; i < num; i++) {
-          arr.push('.');
-        }
+        arr.push({ id: -1, length: num });
       }
       isFile = !isFile;
     });
   for (let i = arr.length - 1; i >= 0; i--) {
-    if (arr[i] !== '.') {
-      for (let j = 0; j < i; j++) {
-        if (arr[j] === '.') {
-          arr[j] = arr[i];
-          arr[i] = '.';
-          break;
+    const file = arr[i];
+    if (file.id > -1) {
+      let lastEmpty = 0;
+      while (file.length > 0 && lastEmpty < i) {
+        let didMove = false;
+        for (let j = lastEmpty; j < i; j++) {
+          const empty = arr[j];
+          if (empty.id === -1) {
+            lastEmpty = j;
+            if (file.length >= empty.length) {
+              empty.id = file.id;
+              file.length -= empty.length;
+              didMove = true;
+            } else {
+              const fileLength = file.length;
+              file.length -= empty.length;
+              empty.length -= fileLength;
+              arr.splice(j, 0, { id: file.id, length: fileLength });
+              didMove = true;
+            }
+            break;
+          }
         }
+        if (!didMove) break;
       }
     }
   }
   let sum = 0;
-  arr.find((val, i) => {
-    if (val === '.') return true;
-    sum += val * i;
+  let i = 0;
+  arr.find((val) => {
+    if (val.id === -1) return true;
+    for (let j = 0; j < val.length; j++) {
+      sum += val.id * i;
+      i++;
+    }
   });
   return sum;
 }

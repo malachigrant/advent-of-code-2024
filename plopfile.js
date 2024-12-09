@@ -19,12 +19,12 @@ export default function (plop) {
       {
         type: 'add',
         path: 'src/year/{{year}}/{{day}}/input.txt',
-        template: '__TEST_RESULTS__X__Y',
+        template: '__TEST_RESULTS__X__Y\n',
       },
       {
         type: 'add',
         path: 'src/year/{{year}}/{{day}}/testInput.txt',
-        template: '__TEST_RESULTS__X__Y',
+        template: '__TEST_RESULTS__X__Y\n',
       },
       {
         type: 'add',

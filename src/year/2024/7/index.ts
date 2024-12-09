@@ -1,3 +1,5 @@
+import { numberConcat } from '../../../utils/NumberUtil';
+
 function canEqualTotal(
   nums: number[],
   total: number,
@@ -30,7 +32,7 @@ function canEqualTotal(
         nums,
         total,
         allowConcat,
-        Number(current.toString() + nextNum),
+        numberConcat(current, nextNum),
         currentIndex + 1,
       ))
   );

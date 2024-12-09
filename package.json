@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest .",
     "dev": "tsx src/main.ts",
     "plop": "plop"
   },
@@ -20,9 +20,12 @@
     "typescript": "^5.6.2"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.7.5",
     "@types/prompts": "^2.4.9",
     "chalk": "^5.3.0",
-    "plop": "^4.0.1"
+    "jest": "^29.7.0",
+    "plop": "^4.0.1",
+    "ts-jest": "^29.2.5"
   }
 }

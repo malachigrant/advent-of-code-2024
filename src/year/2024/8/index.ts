@@ -1,25 +1,24 @@
-type Grid = string[][];
+import { Grid } from '../../../utils/Grid';
+
 type AntennaData = Record<string, [number, number][]>;
 
-function getData(lines: string[]): [Grid, AntennaData] {
-  const grid = lines.map((row) => row.split(''));
+function getData(lines: string[]): [Grid<string>, AntennaData] {
+  const grid = new Grid(lines.map((row) => row.split('')));
   const antenna: Record<string, [number, number][]> = {};
-  grid.forEach((row, y) => {
-    row.forEach((val, x) => {
-      if (val !== '.') {
-        if (!antenna[val]) {
-          antenna[val] = [[x, y]];
-        } else {
-          antenna[val].push([x, y]);
-        }
+  grid.forEach((val, x, y) => {
+    if (val !== '.') {
+      if (!antenna[val]) {
+        antenna[val] = [[x, y]];
+      } else {
+        antenna[val].push([x, y]);
       }
-    });
+    }
   });
   return [grid, antenna];
 }
 
 function getAntinodePositions(
-  grid: Grid,
+  grid: Grid<string>,
   antenna: AntennaData,
   allowMultiple = false,
 ) {
@@ -42,21 +41,11 @@ function getAntinodePositions(
         const newy1 = y2 - diffy * i;
         const newy2 = y1 + diffy * i;
         let hasPlaced = false;
-        if (
-          newx1 >= 0 &&
-          newx1 < grid[0].length &&
-          newy1 >= 0 &&
-          newy1 < grid.length
-        ) {
+        if (grid.isInBounds(newx1, newy1)) {
           locations.add(`${newx1},${newy1}`);
           hasPlaced = true;
         }
-        if (
-          newx2 >= 0 &&
-          newx2 < grid[0].length &&
-          newy2 >= 0 &&
-          newy2 < grid.length
-        ) {
+        if (grid.isInBounds(newx2, newy2)) {
           locations.add(`${newx2},${newy2}`);
           hasPlaced = true;
         }

@@ -11,9 +11,16 @@ const __dirname = fileURLToPath(import.meta.url);
 
 const argReader = new ArgReader();
 
-const useToday = argReader.checkFlag('-t', '--today');
+const runTest = argReader.checkFlag('-t', '--test');
 const repeatLast = argReader.checkFlag('-r', '--repeat');
-const runTest = argReader.checkFlag('--test');
+const useToday = argReader.checkFlag('-d', '--date');
+
+if (!runTest && !repeatLast && !useToday) {
+  console.log('Use `-t` or `--test` to run tests');
+  console.log('Use `-r` or `--repeat` to repeat the last day you ran');
+  console.log('Use `-d` or `--date` to run the current day\n');
+}
+
 const currentYear = new Date().getFullYear().toString();
 const currentDay = new Date().getDate().toString();
 

@@ -1,3 +1,5 @@
+import { average } from '../../../utils/NumberUtil';
+
 export function part1(lines: string[]) {
   const arr: { id: number; length: number }[] = [];
   let isFile = true;
@@ -46,10 +48,8 @@ export function part1(lines: string[]) {
   let i = 0;
   arr.find((val) => {
     if (val.id === -1) return true;
-    for (let j = 0; j < val.length; j++) {
-      sum += val.id * i;
-      i++;
-    }
+    sum += val.id * (average([i, i + val.length - 1]) * val.length);
+    i += val.length;
   });
   return sum;
 }

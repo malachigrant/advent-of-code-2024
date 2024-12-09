@@ -55,7 +55,7 @@ export function part1(lines: string[]) {
 }
 
 export function part2(lines: string[]) {
-  const arr = [];
+  const arr: { id: number; length: number }[] = [];
   let isFile = true;
   let fileId = 0;
   lines[0]
@@ -63,59 +63,50 @@ export function part2(lines: string[]) {
     .map(Number)
     .forEach((num) => {
       if (isFile) {
-        for (let i = 0; i < num; i++) {
-          arr.push(fileId);
-        }
+        arr.push({ id: fileId, length: num });
         fileId++;
       } else {
-        for (let i = 0; i < num; i++) {
-          arr.push('.');
-        }
+        arr.push({ id: -1, length: num });
       }
       isFile = !isFile;
     });
   fileId--;
   while (fileId >= 0) {
-    let endIndex = 0,
-      startIndex = 0;
     for (let i = arr.length - 1; i >= 0; i--) {
-      if (arr[i] === fileId) {
-        endIndex = i;
-        break;
-      }
-    }
-    for (let i = endIndex - 1; i >= 0; i--) {
-      if (arr[i] !== fileId) {
-        startIndex = i + 1;
-        break;
-      }
-    }
-    const len = endIndex - startIndex + 1;
-    let emptyStartIndex;
-    for (let i = 0; i < startIndex; i++) {
-      if (arr[i] === '.') {
-        if (emptyStartIndex === undefined) {
-          emptyStartIndex = i;
-        }
-        if (i - emptyStartIndex + 1 === len) {
-          for (let j = emptyStartIndex; j < emptyStartIndex + len; j++) {
-            arr[j] = fileId;
+      if (arr[i].id === fileId) {
+        for (let j = 0; j < i; j++) {
+          if (arr[j].id === -1 && arr[j].length >= arr[i].length) {
+            arr[j].length -= arr[i].length;
+            arr[i].id = -1;
+            arr.splice(j, 0, { id: fileId, length: arr[i].length });
+            if (arr[i + 2]?.id === -1) {
+              arr[i + 1].length += arr[i + 2].length;
+              arr.splice(i + 2, 1);
+            }
+            if (arr[i - 1]?.id === -1) {
+              arr[i].length += arr[i - 1].length;
+              arr.splice(i - 1, 1);
+            }
+            if (arr[j + 1].length === 0) {
+              arr.splice(j + 1, 1);
+            }
+            break;
           }
-          for (let j = startIndex; j <= endIndex; j++) {
-            arr[j] = '.';
-          }
-          break;
         }
-      } else {
-        emptyStartIndex = undefined;
+        break;
       }
     }
     fileId--;
   }
   let sum = 0;
-  arr.forEach((val, i) => {
-    if (val === '.') return;
-    sum += val * i;
+  let i = 0;
+  arr.forEach((val) => {
+    if (val.id === -1) {
+      i += val.length;
+      return;
+    }
+    sum += val.id * (average([i, i + val.length - 1]) * val.length);
+    i += val.length;
   });
   return sum;
 }

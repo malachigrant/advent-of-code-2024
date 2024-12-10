@@ -43,4 +43,16 @@ export class Grid<T> extends BaseGrid<T> {
   public getWidth(): number {
     return this._grid[0].length;
   }
+
+  public getNeighbours(
+    x: number,
+    y: number,
+  ): { value: T; x: number; y: number }[] {
+    return [
+      { value: this.get(x, y - 1, -1), x, y: y - 1 },
+      { value: this.get(x + 1, y, -1), x: x + 1, y },
+      { value: this.get(x, y + 1, -1), x, y: y + 1 },
+      { value: this.get(x - 1, y, -1), x: x - 1, y },
+    ].filter((n) => n.value > -1);
+  }
 }

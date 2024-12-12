@@ -1,4 +1,11 @@
-import { average, getLoopingNum, numberConcat } from '../NumberUtil';
+import {
+  average,
+  getLoopingNum,
+  getNumDigits,
+  getNumLeft,
+  getNumRight,
+  numberConcat,
+} from '../NumberUtil';
 
 describe('NumberUtil', () => {
   it.each([
@@ -31,5 +38,31 @@ describe('NumberUtil', () => {
     [-5, 1, 4, 1],
   ])('getLoopingNum gets correct number', (num, min, max, expected) => {
     expect(getLoopingNum(num, min, max)).toBe(expected);
+  });
+
+  it.each([
+    [9, 1],
+    [10, 2],
+    [500, 3],
+  ])('getNumDigits', (num, expected) => {
+    expect(getNumDigits(num)).toBe(expected);
+  });
+
+  it.each([
+    [9, 1, 9],
+    [10, 1, 1],
+    [500, 2, 50],
+    [1020, 3, 102],
+  ])('getNumLeft', (num, count, expected) => {
+    expect(getNumLeft(num, count)).toBe(expected);
+  });
+
+  it.each([
+    [9, 1, 9],
+    [10, 1, 0],
+    [500, 2, 0],
+    [1020, 3, 20],
+  ])('getNumRight', (num, count, expected) => {
+    expect(getNumRight(num, count)).toBe(expected);
   });
 });

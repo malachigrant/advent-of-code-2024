@@ -1,3 +1,9 @@
+import {
+  getNumDigits,
+  getNumLeft,
+  getNumRight,
+} from '../../../utils/NumberUtil';
+
 type Stones = Record<number, number>;
 
 function addToStones(stones: Stones, num, count) {
@@ -15,8 +21,11 @@ function blink(stones: Stones) {
     if (num === 0) {
       nextNums = [1];
     } else if (Math.floor(Math.log10(num) + 1) % 2 === 0) {
-      const midMagnitude = Math.pow(10, Math.floor(Math.log10(num) + 1) / 2);
-      nextNums = [Math.floor(num / midMagnitude), num % midMagnitude];
+      const digitCount = getNumDigits(num);
+      nextNums = [
+        getNumLeft(num, digitCount / 2),
+        getNumRight(num, digitCount / 2),
+      ];
     } else {
       nextNums = [num * 2024];
     }

@@ -38,9 +38,7 @@ function visitAllConnected(
 
 export function part1(lines: string[]) {
   const grid = new Grid(lines.map((line) => line.split('')));
-  const visitedGrid = new Grid(
-    lines.map((line) => line.split('').map(() => 0)),
-  );
+  const visitedGrid = grid.map(() => 0);
   const areas: AreaData[] = [];
   grid.forEach((val, x, y) => {
     if (visitedGrid.get(x, y)) return;
@@ -57,9 +55,7 @@ export function part1(lines: string[]) {
 
 export function part2(lines: string[]) {
   const grid = new Grid(lines.map((line) => line.split('')));
-  const visitedGrid = new Grid(
-    lines.map((line) => line.split('').map(() => 0)),
-  );
+  const visitedGrid = grid.map(() => 0);
   const areas: AreaData[] = [];
   grid.forEach((val, x, y) => {
     if (visitedGrid.get(x, y)) return;

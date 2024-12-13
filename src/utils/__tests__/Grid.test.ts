@@ -1,11 +1,14 @@
 import { Grid } from '../Grid';
 
 describe('Grid', () => {
-  const grid = new Grid([
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
-  ]);
+  let grid;
+  beforeEach(() => {
+    grid = new Grid([
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ]);
+  });
   it('can get values in cells', () => {
     expect(grid.get(0, 0)).toBe(1);
     expect(grid.get(0, 1)).toBe(4);
@@ -30,6 +33,13 @@ describe('Grid', () => {
     expect(allResults.length).toBe(9);
     expect(allResults[0].x).toBe(0);
     expect(allResults[0].y).toBe(0);
-    expect(allResults[0].val).toBe(11);
+    expect(allResults[0].val).toBe(1);
+  });
+
+  it('map creates new grid', () => {
+    const newGrid = grid.map((val, x, y) => val + x + y);
+    expect(newGrid.get(0, 0)).toBe(1);
+    expect(newGrid.get(2, 2)).toBe(13);
+    expect(newGrid.get(2, 0)).toBe(5);
   });
 });

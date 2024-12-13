@@ -1,10 +1,37 @@
+import { sep } from 'path';
 import { BaseGrid } from './BaseGrid';
+
+const horizontalNeighbourOffsets = [
+  [1, 0],
+  [0, 1],
+  [-1, 0],
+  [0, -1],
+];
+const diagonalNeighbourOffsets = [
+  [1, 1],
+  [-1, 1],
+  [-1, -1],
+  [1, -1],
+];
 
 export class Grid<T> extends BaseGrid<T> {
   private _grid: T[][];
   constructor(grid: T[][]) {
     super();
     this._grid = grid;
+  }
+
+  public static of<T>(
+    width: number,
+    height: number,
+    initialValue?: T,
+  ): Grid<T> {
+    const arr = new Array(height).map((_) => {
+      const a = new Array(width);
+      if (initialValue !== undefined) a.fill(initialValue);
+      return a;
+    });
+    return new Grid<T>(arr);
   }
 
   public isInBounds(x: number, y: number) {
@@ -36,6 +63,15 @@ export class Grid<T> extends BaseGrid<T> {
     });
   }
 
+  public map<K>(fn: (value: T, x: number, y: number) => K) {
+    const newGrid = this._grid.map((row, y) => {
+      return row.map((value, x) => {
+        return fn(value, x, y);
+      });
+    });
+    return new Grid(newGrid);
+  }
+
   public getHeight(): number {
     return this._grid.length;
   }
@@ -47,13 +83,23 @@ export class Grid<T> extends BaseGrid<T> {
   public getNeighbours(
     x: number,
     y: number,
+    includeDiagonals = false,
     defaultValue?,
   ): { value: T; x: number; y: number }[] {
-    return [
-      { value: this.get(x, y - 1, '.'), x, y: y - 1 },
-      { value: this.get(x + 1, y, '.'), x: x + 1, y },
-      { value: this.get(x, y + 1, '.'), x, y: y + 1 },
-      { value: this.get(x - 1, y, '.'), x: x - 1, y },
+    const offsets = [
+      ...horizontalNeighbourOffsets,
+      ...(includeDiagonals ? diagonalNeighbourOffsets : []),
     ];
+    return offsets.map(([nx, ny]) => ({
+      value: this.get(x + nx, y + ny, defaultValue),
+      x: x + nx,
+      y: y + ny,
+    }));
+  }
+
+  public log(separator = '') {
+    this._grid.forEach((row) => {
+      console.log(row.map((val) => val.toString()).join(separator));
+    });
   }
 }

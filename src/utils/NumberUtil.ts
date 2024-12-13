@@ -48,3 +48,14 @@ export function getNumLeft(num: number, digitCount: number) {
 export function getNumRight(num: number, digitCount: number) {
   return num % Math.pow(10, digitCount);
 }
+
+/**
+ * Gets intersection of lines of form: ax + by = c
+ * TODO: Handle parallel cases
+ */
+export function getIntersection(a1, b1, c1, a2, b2, c2) {
+  const xCoeff = a2 - (b2 / b1) * a1;
+  const x = (c2 - (b2 / b1) * c1) / xCoeff;
+  const y = (c1 - a1 * x) / b1;
+  return [x, y];
+}

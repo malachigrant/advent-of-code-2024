@@ -1,5 +1,6 @@
 import {
   average,
+  getIntersection,
   getLoopingNum,
   getNumDigits,
   getNumLeft,
@@ -64,5 +65,11 @@ describe('NumberUtil', () => {
     [1020, 3, 20],
   ])('getNumRight', (num, count, expected) => {
     expect(getNumRight(num, count)).toBe(expected);
+  });
+
+  it('intersection', () => {
+    const [x, y] = getIntersection(1, 1, 4, 2, 1, 3);
+    expect(x).toBe(-1);
+    expect(y).toBe(5);
   });
 });

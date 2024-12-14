@@ -14,6 +14,7 @@ const argReader = new ArgReader();
 const runTest = argReader.checkFlag('-t', '--test');
 const repeatLast = argReader.checkFlag('-r', '--repeat');
 const useToday = argReader.checkFlag('-d', '--date');
+const showVisuals = argReader.checkFlag('-v', '--visual');
 
 if (!runTest && !repeatLast && !useToday) {
   console.log('Use `-t` or `--test` to run tests');
@@ -101,7 +102,7 @@ if (runTest) console.log('TEST RESULTS\n');
 if (importedDay.part1) {
   let part1Result;
   const msP1 = time(
-    () => (part1Result = importedDay.part1(inputLines, runTest)),
+    () => (part1Result = importedDay.part1(inputLines, runTest, showVisuals)),
   );
   console.log(
     `PART 1: ${part1Result} - ${msP1.toLocaleString('en-US', { maximumFractionDigits: 3, useGrouping: false })}ms`,
@@ -117,7 +118,7 @@ if (importedDay.part1) {
 if (importedDay.part2) {
   let part2Result;
   const msP2 = time(
-    () => (part2Result = importedDay.part2(inputLines, runTest)),
+    () => (part2Result = importedDay.part2(inputLines, runTest, showVisuals)),
   );
   console.log(
     `PART 2: ${part2Result} - ${msP2.toLocaleString('en-US', { maximumFractionDigits: 3, useGrouping: false })}ms`,

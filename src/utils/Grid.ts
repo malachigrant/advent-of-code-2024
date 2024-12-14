@@ -26,11 +26,9 @@ export class Grid<T> extends BaseGrid<T> {
     height: number,
     initialValue?: T,
   ): Grid<T> {
-    const arr = new Array(height).map((_) => {
-      const a = new Array(width);
-      if (initialValue !== undefined) a.fill(initialValue);
-      return a;
-    });
+    const arr = Array(height)
+      .fill(1)
+      .map(() => Array(width).fill(initialValue));
     return new Grid<T>(arr);
   }
 

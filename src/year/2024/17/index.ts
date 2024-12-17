@@ -76,7 +76,7 @@ export function part2(lines: string[]) {
   const [, instrStr] = instructions.match(/Program: ([\d,]+)/);
   const instrs = instrStr.split(',').map(Number);
   let startA = 0;
-  for (let i = 15; i >= 0; i--) {
+  for (let i = instrs.length - 1; i >= 0; i--) {
     for (let a = startA; ; a++) {
       const registers = { ...oldregisters, A: a };
       let pointer = 0;
@@ -90,13 +90,13 @@ export function part2(lines: string[]) {
           outputs.push(val);
         });
         if (
-          outputs.length === 16 - i &&
+          outputs.length === instrs.length - i &&
           outputs.every((output, j) => output === instrs[i + j])
         ) {
           if (i === 0) return a;
           startA = a * 8;
           break;
-        } else if (outputs.length > 16 - i) break;
+        } else if (outputs.length > instrs.length - i) break;
       }
       if (startA > a) break;
     }

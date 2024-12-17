@@ -38,7 +38,7 @@ export class Grid<T> extends BaseGrid<T> {
     );
   }
 
-  public get(x: number, y: number, defaultValue = null) {
+  public get(x: number, y: number, defaultValue = null): T {
     if (!this.isInBounds(x, y)) {
       return defaultValue;
     }

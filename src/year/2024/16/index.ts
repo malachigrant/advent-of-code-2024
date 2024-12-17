@@ -2,9 +2,9 @@ import { Grid } from '../../../utils/Grid';
 
 const facingMap = {
   E: [1, 0],
+  N: [0, -1],
   S: [0, 1],
   W: [-1, 0],
-  N: [0, -1],
 };
 
 const dirOppositeMap = {
@@ -87,50 +87,65 @@ export function part2(lines: string[]) {
       tiles: { [`${posX},${posY}`]: true },
     },
   ];
+  let currentShortest = -1;
   while (queue.length) {
     const { x, y, facing, score, tiles } = queue.splice(0, 1)[0];
+    if (currentShortest > -1 && score > currentShortest) continue;
+    if (x === endX && y === endY) {
+      if (currentShortest === -1) currentShortest = score;
+      else currentShortest = Math.min(currentShortest, score);
+      continue;
+    }
     Object.entries(facingMap).forEach(([dir, offset]) => {
-      const tile = grid.get(x + offset[0], y + offset[1]);
+      const newX = x + offset[0];
+      const newY = y + offset[1];
+      const tile = grid.get(newX, newY);
       if (tile === '#') return;
       let newScore = score;
       if (dir === facing) newScore++;
-      else if (dirOppositeMap[dir] === facing) newScore += 2001;
+      else if (dirOppositeMap[dir] === facing) return;
       else newScore += 1001;
-      const visitedTile = visited.get(x + offset[0], y + offset[1]);
+      const visitedTile = visited.get(newX, newY);
       let pushToQueue = true;
-      if (visitedTile[dir].score >= newScore || visitedTile[dir].score === -1) {
+      if (
+        (visitedTile[dir].score >= newScore || visitedTile[dir].score === -1) &&
+        Object.values(visitedTile).findIndex(
+          (val) => val.score >= 0 && val.score + 2001 < newScore,
+        ) === -1
+      ) {
+        const xyKey = `${x + offset[0]},${y + offset[1]}`;
         if (visitedTile[dir].score === newScore) {
           if (Object.keys(tiles).every((key) => visitedTile[dir].tiles[key])) {
             pushToQueue = false;
           } else {
-            visited.set(x + offset[0], y + offset[1], {
+            visited.set(newX, newY, {
               ...visitedTile,
               [dir]: {
                 score: newScore,
                 tiles: {
                   ...tiles,
                   ...visitedTile[dir].tiles,
-                  [`${x + offset[0]},${y + offset[1]}`]: true,
+                  [xyKey]: true,
                 },
               },
             });
           }
         } else {
-          visited.set(x + offset[0], y + offset[1], {
+          visited.set(newX, newY, {
             ...visitedTile,
             [dir]: {
               score: newScore,
-              tiles: { ...tiles, [`${x + offset[0]},${y + offset[1]}`]: true },
+              tiles: { ...tiles, [xyKey]: true },
             },
           });
         }
         if (pushToQueue)
           queue.push({
-            x: x + offset[0],
-            y: y + offset[1],
+            x: newX,
+            y: newY,
             facing: dir,
             score: newScore,
-            tiles: { ...tiles, [`${x + offset[0]},${y + offset[1]}`]: true },
+            tiles: { ...tiles, [xyKey]: true },
           });
       }
     });

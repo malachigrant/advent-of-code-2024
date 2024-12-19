@@ -32,13 +32,17 @@ export class Grid<T> extends BaseGrid<T> {
     return new Grid<T>(arr);
   }
 
+  public static parse(lines: string[]): Grid<string> {
+    return new Grid(lines.map((line) => line.split('')));
+  }
+
   public isInBounds(x: number, y: number) {
     return (
       x >= 0 && y >= 0 && x < this._grid[0].length && y < this._grid.length
     );
   }
 
-  public get(x: number, y: number, defaultValue = null): T {
+  public get(x: number, y: number, defaultValue = undefined): T {
     if (!this.isInBounds(x, y)) {
       return defaultValue;
     }
@@ -93,6 +97,32 @@ export class Grid<T> extends BaseGrid<T> {
       x: x + nx,
       y: y + ny,
     }));
+  }
+
+  public bfs(
+    startX: number,
+    startY: number,
+    canVisitFn = (x, y) =>
+      this.getNeighbours(x, y).filter(
+        (n) => n.value !== undefined && n.value !== '#',
+      ),
+  ): Grid<number> {
+    const visited = this.map(() => -1);
+    visited.set(startX, startY, 0);
+    const queue = [[0, 0]];
+    while (queue.length) {
+      const [x, y] = queue.splice(0, 1)[0];
+      const currentSteps = visited.get(x, y);
+      const neighbours = canVisitFn(x, y);
+      neighbours.forEach((n) => {
+        const nSteps = visited.get(n.x, n.y, -1);
+        if (nSteps === -1 || nSteps > currentSteps + 1) {
+          visited.set(n.x, n.y, currentSteps + 1);
+          queue.push([n.x, n.y]);
+        }
+      });
+    }
+    return visited;
   }
 
   public log(separator = '') {

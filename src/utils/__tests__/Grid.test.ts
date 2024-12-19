@@ -16,8 +16,8 @@ describe('Grid', () => {
   });
 
   it('uses fallback when trying to get values outside of grid', () => {
-    expect(grid.get(-1, -1)).toBe(null);
-    expect(grid.get(3, 3)).toBe(null);
+    expect(grid.get(-1, -1)).toBe(undefined);
+    expect(grid.get(3, 3)).toBe(undefined);
     expect(grid.get(-1, 3, 'test')).toBe('test');
   });
 
@@ -41,5 +41,12 @@ describe('Grid', () => {
     expect(newGrid.get(0, 0)).toBe(1);
     expect(newGrid.get(2, 2)).toBe(13);
     expect(newGrid.get(2, 0)).toBe(5);
+  });
+
+  it('bfs works', () => {
+    const map = Grid.parse(['     ', '#### ', '     ', ' ####', '     ']);
+    const bfs = map.bfs(0, 0);
+    expect(bfs.get(0, 0)).toBe(0);
+    expect(bfs.get(4, 4)).toBe(16);
   });
 });

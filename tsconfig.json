@@ -6,7 +6,8 @@
     "forceConsistentCasingInFileNames": true,
     "strict": false,
     "skipLibCheck": true,
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "lib": ["es2021"]
   },
   "include": ["src"]
 }

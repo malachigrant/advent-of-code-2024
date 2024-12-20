@@ -109,7 +109,7 @@ export class Grid<T> extends BaseGrid<T> {
   ): Grid<number> {
     const visited = this.map(() => -1);
     visited.set(startX, startY, 0);
-    const queue = [[0, 0]];
+    const queue = [[startX, startY]];
     while (queue.length) {
       const [x, y] = queue.splice(0, 1)[0];
       const currentSteps = visited.get(x, y);

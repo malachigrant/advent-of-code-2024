@@ -17,28 +17,28 @@ function prune(num) {
 }
 
 export function part1(lines: string[]) {
-  let nums = [];
-  lines.forEach((line) => {
-    let num = Number(line);
-    for (let i = 0; i < 2000; i++) {
-      num = next(num);
-    }
-    nums.push(num);
-  });
-  return nums.reduce(sumReducer);
+  return lines
+    .map((line) => {
+      let num = Number(line);
+      for (let i = 0; i < 2000; i++) {
+        num = next(num);
+      }
+      return num;
+    })
+    .reduce(sumReducer);
 }
 
-type Sequences = Record<string, { seq: number[]; price: number }[]>;
+type Sequences = Record<string, { price: number; i: number }>;
 
 export function part2(lines: string[]) {
   const sequences: Sequences = {};
   function addToSequences(seq: number[], price: number, i: number) {
     const key = seq.join(',');
     if (!sequences[key]) {
-      sequences[key] = [];
-    }
-    if (!sequences[key][i]) {
-      sequences[key][i] = { seq, price };
+      sequences[key] = { price, i };
+    } else if (sequences[key].i < i) {
+      sequences[key].price += price;
+      sequences[key].i = i;
     }
   }
   lines.forEach((line, j) => {
@@ -56,11 +56,6 @@ export function part2(lines: string[]) {
     }
   });
   return Object.values(sequences)
-    .map((prices) =>
-      prices
-        .map(({ price }) => Number(price))
-        .filter((v) => !!v)
-        .reduce(sumReducer, 0),
-    )
+    .map(({ price }) => price)
     .reduce((acc, curr) => (acc === -1 ? curr : Math.max(acc, curr)), -1);
 }

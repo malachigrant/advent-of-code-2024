@@ -28,6 +28,12 @@ export class Graph<T> {
       this._nodes[toLabel].paths.push({ distance, otherLabel: fromLabel });
   }
 
+  public hasDirectPath(fromLabel: string, toLabel: string) {
+    return this._nodes[fromLabel].paths.some(
+      (path) => path.otherLabel === toLabel,
+    );
+  }
+
   public dijkstra(startLabel: string) {
     const map = { [startLabel]: 0 };
     const queue = [startLabel];

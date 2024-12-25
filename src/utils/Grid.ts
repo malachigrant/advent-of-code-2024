@@ -125,6 +125,28 @@ export class Grid<T> extends BaseGrid<T> {
     return visited;
   }
 
+  public count(value: T): number {
+    let count = 0;
+    this.forEach((val) => {
+      if (val === value) {
+        count++;
+      }
+    });
+    return count;
+  }
+
+  public getLine(x: number, y: number, dx: number, dy: number): T[] {
+    const line = [];
+    let cx = x + dx;
+    let cy = y + dy;
+    while (this.isInBounds(cx, cy)) {
+      line.push(this.get(cx, cy));
+      cx += dx;
+      cy += dy;
+    }
+    return line;
+  }
+
   public log(separator = '') {
     this._grid.forEach((row) => {
       console.log(row.map((val) => val.toString()).join(separator));

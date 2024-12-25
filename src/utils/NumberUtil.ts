@@ -59,3 +59,10 @@ export function getIntersection(a1, b1, c1, a2, b2, c2) {
   const y = (c1 - a1 * x) / b1;
   return [x, y];
 }
+
+export function rotateCoordinate(x: number, y: number, direction: 'R' | 'L') {
+  let newX, newY;
+  newY = direction === 'R' ? x : -x;
+  newX = direction === 'R' ? -y : y;
+  return [newX, newY];
+}

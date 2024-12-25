@@ -16,6 +16,14 @@ const repeatLast = argReader.checkFlag('-r', '--repeat');
 const useToday = argReader.checkFlag('-d', '--date');
 const showVisuals = argReader.checkFlag('-v', '--visual');
 
+let yearArg, dayArg;
+for (let i = 2; i < process.argv.length; i++) {
+  const arg = process.argv[i];
+  if (arg.startsWith('-')) continue;
+  if (!yearArg) yearArg = arg;
+  else if (!dayArg) dayArg = arg;
+}
+
 if (!runTest && !repeatLast && !useToday) {
   console.log('Use `-t` or `--test` to run tests');
   console.log('Use `-r` or `--repeat` to repeat the last day you ran');
@@ -44,6 +52,9 @@ if (repeatLast) {
 } else if (useToday) {
   year = currentYear;
   day = currentDay;
+} else if (yearArg && dayArg) {
+  year = yearArg;
+  day = dayArg;
 } else {
   const years = await readdir(path.join(__dirname, '../year'));
   const initialYearIndex = years.findIndex(

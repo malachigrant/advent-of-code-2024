@@ -1,19 +1,18 @@
 function getHighest(line: string, count) {
-  let max = 0;
+  let maxDigit = 0;
+  let maxDigitIndex = -1;
   for (let i = 0; i < line.length - count + 1; i++) {
-    if (Number(line[i]) <= Number(max.toString()[0])) {
-      continue;
+    if (Number(line[i]) > maxDigit) {
+      maxDigit = Number(line[i]);
+      maxDigitIndex = i;
     }
-    max = Math.max(
-      max,
-      Number(
-        count === 1
-          ? line[i]
-          : line[i] + getHighest(line.slice(i + 1), count - 1),
-      ),
-    );
   }
-  return max;
+  if (count === 1) {
+    return maxDigit;
+  }
+  return Number(
+    maxDigit.toString() + getHighest(line.slice(maxDigitIndex + 1), count - 1),
+  );
 }
 
 export function part1(lines: string[]) {

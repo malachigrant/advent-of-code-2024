@@ -33,9 +33,9 @@ if (!runTest && !repeatLast && !useToday) {
 const currentYear = new Date().getFullYear().toString();
 const currentDay = new Date().getDate().toString();
 
-function time(fn) {
+async function time(fn) {
   const start = performance.now();
-  fn();
+  await fn();
   return performance.now() - start;
 }
 
@@ -112,8 +112,9 @@ if (testResultsMatch) {
 if (runTest) console.log('TEST RESULTS\n');
 if (importedDay.part1) {
   let part1Result;
-  const msP1 = time(
-    () => (part1Result = importedDay.part1(inputLines, runTest, showVisuals)),
+  const msP1 = await time(
+    async () =>
+      (part1Result = await importedDay.part1(inputLines, runTest, showVisuals)),
   );
   console.log(
     `PART 1: ${part1Result} - ${msP1.toLocaleString('en-US', { maximumFractionDigits: 3, useGrouping: false })}ms`,
@@ -128,8 +129,9 @@ if (importedDay.part1) {
 }
 if (importedDay.part2) {
   let part2Result;
-  const msP2 = time(
-    () => (part2Result = importedDay.part2(inputLines, runTest, showVisuals)),
+  const msP2 = await time(
+    async () =>
+      (part2Result = await importedDay.part2(inputLines, runTest, showVisuals)),
   );
   console.log(
     `PART 2: ${part2Result} - ${msP2.toLocaleString('en-US', { maximumFractionDigits: 3, useGrouping: false })}ms`,
